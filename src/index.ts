@@ -147,11 +147,9 @@ debugObject.envMapIntensity = 5
  * Models
  */
 gltfLoader.load(
-    // '/models/DamagedHelmet/glTF/DamagedHelmet.gltf',
     '/models/MaterialsVariantsShoe/glTF/MaterialsVariantsShoe.gltf',
     (gltf) =>
     {
-        // gltf.scene.scale.set(2.5, 2.5, 2.5)
         gltf.scene.scale.set(20, 20, 20)
         gltf.scene.rotation.y = Math.PI * 0.5
         gltf.scene.rotation.z = -Math.PI * 0.1
