@@ -3,9 +3,7 @@ import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import { GLTFLoader, GLTFParser } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { gsap } from 'gsap'
-import { GUI } from 'dat.gui'
 
-const gui = new GUI();
 const state = { variant: 'midnight'}
 
 /**
@@ -159,10 +157,13 @@ gltfLoader.load(
 
         const parser = gltf.parser;
         const variantsExtension = gltf.userData.gltfExtensions['KHR_materials_variants']
-        const variants = variantsExtension.variants.map(variant => variant.name)
-        const variantsControl = gui.add(state, 'variant', variants).name('Variant')
 
-        variantsControl.onChange(value => updateAllMaterials(parser, variantsExtension, value))
+        const buttons = document.querySelectorAll('.choice')
+        buttons.forEach(button => {
+            button.addEventListener('mousedown', () => {
+                updateAllMaterials(parser, variantsExtension, button.classList[1])
+            })
+        })
 
         updateAllMaterials(parser, variantsExtension, state.variant)
     }
