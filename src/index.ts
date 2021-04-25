@@ -1,8 +1,12 @@
 import './style.scss'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import { GLTFLoader, GLTFParser } from 'three/examples/jsm/loaders/GLTFLoader.js'
 import { gsap } from 'gsap'
+import { GUI } from 'dat.gui'
+
+const gui = new GUI();
+const state = { variant: 'midnight'}
 
 /**
  * Loaders
@@ -85,13 +89,27 @@ scene.add(overlay)
 /**
  * Update all materials
  */
-const updateAllMaterials = () =>
+const updateAllMaterials = (parser: GLTFParser, extension, variantName) =>
 {
-    scene.traverse((child) =>
+
+    const variantIndex = extension.variants.findIndex(v => v.name.includes(variantName))
+
+    scene.traverse(async (child) =>
     {
-        if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial)
+        if(child instanceof THREE.Mesh && child.material instanceof THREE.MeshStandardMaterial && child.userData.gltfExtensions['KHR_materials_variants'])
         {
-            // child.material.envMap = environmentMap
+            const meshVariants = child.userData.gltfExtensions['KHR_materials_variants'];
+            if (!meshVariants) return;
+            if (!child.userData.originalMaterial) child.userData.originalMaterial = child.material
+            const mappings = meshVariants.mappings.find(mapping => mapping.variants.includes(variantIndex))
+            if (mappings) {
+                child.material = await parser.getDependency('material', mappings.material);
+                parser.assignFinalMaterial(child)
+            } else {
+                child.material = child.userData.originalMaterial
+            }
+
+            child.material.envMap = environmentMap
             child.material.envMapIntensity = debugObject.envMapIntensity || child.material.envMapIntensity
             child.material.needsUpdate = true
             child.castShadow = true
@@ -140,9 +158,15 @@ gltfLoader.load(
         gltf.scene.position.y += -1
         scene.add(gltf.scene)
 
-        console.log(gltf)
 
-        updateAllMaterials()
+        const parser = gltf.parser;
+        const variantsExtension = gltf.userData.gltfExtensions['KHR_materials_variants']
+        const variants = variantsExtension.variants.map(variant => variant.name)
+        const variantsControl = gui.add(state, 'variant', variants).name('Variant')
+
+        variantsControl.onChange(value => updateAllMaterials(parser, variantsExtension, value))
+
+        updateAllMaterials(parser, variantsExtension, state.variant)
     }
 )
 
