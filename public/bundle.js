@@ -147,13 +147,21 @@ var points = [
         element: document.querySelector('.point-0')
     },
     {
-        position: new THREE.Vector3(0.5, 0.8, -1.6),
+        position: new THREE.Vector3(0.3, 0.8, -0.9),
         element: document.querySelector('.point-1')
     },
     {
-        position: new THREE.Vector3(1.6, -1.3, -0.7),
+        position: new THREE.Vector3(-0.6, -1.3, -0.7),
         element: document.querySelector('.point-2')
-    }
+    },
+    {
+        position: new THREE.Vector3(0, 0.3, 0.7),
+        element: document.querySelector('.point-3')
+    },
+    {
+        position: new THREE.Vector3(0, 2, 1.7),
+        element: document.querySelector('.point-4')
+    },
 ];
 /**
  * Lights
