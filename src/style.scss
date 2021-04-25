@@ -90,3 +90,22 @@ body
 .point.visible .label {
     transform: scale(1, 1);
 }
+
+.info {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+    background-color: rgba(0, 0, 0, 0.3);
+    position: absolute;
+    padding: 10px;
+    bottom: 0px;
+    z-index: 1;
+    a {
+        color: white;
+        font-weight: bolder;
+    }
+    @media only screen and (min-width: 750px) {
+        bottom: 10px;
+        right: 10px;
+        text-align: right;
+    }
+}
